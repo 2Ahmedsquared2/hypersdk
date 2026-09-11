@@ -8,6 +8,19 @@ A comprehensive Rust SDK for interacting with the [Hyperliquid](https://app.hype
 
 > **AI Agents**: Install `hypecli` and check the [`skills/`](skills/) folder for guides on payments, trading, and more. No Rust toolchain required.
 
+## About This Fork
+
+This fork (maintained by [@2Ahmedsquared2](https://github.com/2Ahmedsquared2)) is configured for **testnet-first trading**:
+
+- Trading examples default to testnet (`hypercore::testnet()`)
+- Code-only signing via agent wallets (no Phantom required)
+- Focus on perpetuals and HIP-4 prediction markets
+- Comprehensive testnet guide: [**docs/TESTNET_TRADING.md**](docs/TESTNET_TRADING.md)
+
+**Get started**: See the [Testnet Trading Guide](docs/TESTNET_TRADING.md) for setup instructions, API mappings, and step-by-step examples.
+
+**Upstream**: This is a fork of [infinitefield/hypersdk](https://github.com/infinitefield/hypersdk).
+
 ## Overview
 
 Hyperliquid is a high-performance decentralized exchange with two main components:

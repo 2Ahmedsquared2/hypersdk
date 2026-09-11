@@ -7,7 +7,7 @@ use hypersdk::hypercore;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let client = hypercore::mainnet();
+    let client = hypercore::testnet();
 
     // Fetch raw metadata
     let meta = client.outcome_meta().await?;

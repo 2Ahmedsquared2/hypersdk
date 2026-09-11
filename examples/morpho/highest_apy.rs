@@ -129,35 +129,35 @@ async fn main() -> anyhow::Result<()> {
                     continue;
                 };
 
-                if topic0 == &Morpho::CreateMarket::SIGNATURE_HASH {
-                    if let Ok(market) = Morpho::CreateMarket::decode_log_data(&log.inner) {
-                        // let collateral =
-                        //     IERC20::new(market.marketParams.collateralToken, provider.clone());
-                        // let loan = IERC20::new(market.marketParams.loanToken, provider.clone());
-                        // let (collateral, loan) = provider
-                        //     .multicall()
-                        //     .add(collateral.symbol())
-                        //     .add(loan.symbol())
-                        //     .aggregate()
-                        //     .await?;
-                        let params = market.marketParams;
-                        let market = morpho.market(market.id).call().await?;
-                        if market.totalBorrowAssets == 0 || market.totalSupplyAssets == 0 {
-                            return Ok(());
-                        }
-
-                        let rate = irm
-                            .borrowRateView(params.clone(), market.clone())
-                            .call()
-                            .await?;
-                        let utilization =
-                            market.totalBorrowAssets as f64 / market.totalSupplyAssets as f64;
-                        let fee = market.fee as f64 / 1e18;
-                        let rate = rate.to::<u64>() as f64 / 1e18;
-                        let borrow_apy = (rate * 31_536_000f64).exp() - 1.0;
-                        let supply_apy = borrow_apy * utilization * (1.0 - fee);
-                        let _ = tx.send((params, market, borrow_apy, supply_apy));
+                if topic0 == &Morpho::CreateMarket::SIGNATURE_HASH
+                    && let Ok(market) = Morpho::CreateMarket::decode_log_data(&log.inner)
+                {
+                    // let collateral =
+                    //     IERC20::new(market.marketParams.collateralToken, provider.clone());
+                    // let loan = IERC20::new(market.marketParams.loanToken, provider.clone());
+                    // let (collateral, loan) = provider
+                    //     .multicall()
+                    //     .add(collateral.symbol())
+                    //     .add(loan.symbol())
+                    //     .aggregate()
+                    //     .await?;
+                    let params = market.marketParams;
+                    let market = morpho.market(market.id).call().await?;
+                    if market.totalBorrowAssets == 0 || market.totalSupplyAssets == 0 {
+                        return Ok(());
                     }
+
+                    let rate = irm
+                        .borrowRateView(params.clone(), market.clone())
+                        .call()
+                        .await?;
+                    let utilization =
+                        market.totalBorrowAssets as f64 / market.totalSupplyAssets as f64;
+                    let fee = market.fee as f64 / 1e18;
+                    let rate = rate.to::<u64>() as f64 / 1e18;
+                    let borrow_apy = (rate * 31_536_000f64).exp() - 1.0;
+                    let supply_apy = borrow_apy * utilization * (1.0 - fee);
+                    let _ = tx.send((params, market, borrow_apy, supply_apy));
                 }
             }
 

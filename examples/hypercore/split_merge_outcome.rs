@@ -47,7 +47,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::parse();
     let signer = args.get()?;
 
-    let client = hypercore::mainnet();
+    let client = hypercore::testnet();
 
     println!(
         "Account: {}\nOutcome: {} | Wei: {}",

@@ -7,6 +7,40 @@ on:
     branches: [main]
 
 jobs:
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+
+    env:
+      CARGO_TERM_COLOR: always
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-clippy-
+            ${{ runner.os }}-cargo-
+
+      - name: Show toolchain
+        run: rustc -Vv && cargo -V
+
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings -A clippy::too_many_arguments -A clippy::large_enum_variant -A clippy::assertions_on_constants -A clippy::collapsible_if
+
   build-test:
     name: Build and Test (stable)
     runs-on: ubuntu-latest

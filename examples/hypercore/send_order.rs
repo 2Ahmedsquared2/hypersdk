@@ -28,7 +28,7 @@ async fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
     let signer = args.get()?;
 
-    let client = hypercore::mainnet();
+    let client = hypercore::testnet();
     let role = client.user_role(signer.address()).await?;
 
     let perps = client.perps().await?;
