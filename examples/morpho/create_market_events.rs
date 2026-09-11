@@ -127,26 +127,26 @@ async fn main() -> anyhow::Result<()> {
                     continue;
                 };
 
-                if topic0 == &MorphoEvents::CreateMarket::SIGNATURE_HASH {
-                    if let Ok(market) = MorphoEvents::CreateMarket::decode_log_data(&log.inner) {
-                        let collateral =
-                            ERC20::new(market.marketParams.collateralToken, provider.clone());
-                        let loan = ERC20::new(market.marketParams.loanToken, provider.clone());
-                        let (collateral, loan) = provider
-                            .multicall()
-                            .add(collateral.symbol())
-                            .add(loan.symbol())
-                            .aggregate()
-                            .await?;
-                        let _ = tx.send(MarketParams {
-                            id: market.id,
-                            collateral_token: collateral,
-                            loan_token: loan,
-                            irm: market.marketParams.irm,
-                            oracle: market.marketParams.oracle,
-                            lltv: market.marketParams.lltv,
-                        });
-                    }
+                if topic0 == &MorphoEvents::CreateMarket::SIGNATURE_HASH
+                    && let Ok(market) = MorphoEvents::CreateMarket::decode_log_data(&log.inner)
+                {
+                    let collateral =
+                        ERC20::new(market.marketParams.collateralToken, provider.clone());
+                    let loan = ERC20::new(market.marketParams.loanToken, provider.clone());
+                    let (collateral, loan) = provider
+                        .multicall()
+                        .add(collateral.symbol())
+                        .add(loan.symbol())
+                        .aggregate()
+                        .await?;
+                    let _ = tx.send(MarketParams {
+                        id: market.id,
+                        collateral_token: collateral,
+                        loan_token: loan,
+                        irm: market.marketParams.irm,
+                        oracle: market.marketParams.oracle,
+                        lltv: market.marketParams.lltv,
+                    });
                 }
             }
 

@@ -56,13 +56,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     ws.subscribe(Subscription::AllMids { dex: None });
 
     while let Some(event) = ws.next().await {
-        if let Event::Message(Incoming::AllMids { dex: _, mids }) = event {
-            if let Some(price) = mids.get(&khype.name) {
-                println!(
-                    "Price of {}/{} is {}",
-                    khype.tokens[0].name, khype.tokens[1].name, price
-                );
-            }
+        if let Event::Message(Incoming::AllMids { dex: _, mids }) = event
+            && let Some(price) = mids.get(&khype.name)
+        {
+            println!(
+                "Price of {}/{} is {}",
+                khype.tokens[0].name, khype.tokens[1].name, price
+            );
         }
     }
 
